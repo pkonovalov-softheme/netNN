@@ -30,11 +30,11 @@ namespace CoreLib
 
         public Matrix Weights { get; }
 
-        public void ForwardPass(ValueLayer prevLayer)
+        public void ForwardPass()
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
-            Matrix.NonLinearTransform(Values, Weights, prevLayer.Values, _biases, _activation.Forward);
+            Matrix.NonLinearTransform(Values, Weights, PrevLayer.Values, _biases, _activation.Forward);
         }
 
         public void BackwardPass()
