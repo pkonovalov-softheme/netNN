@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLib;
+using CoreLib.Layers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
@@ -15,8 +16,11 @@ namespace Tests
         [TestMethod]
         public void TestForwardPAssIsZero()
         {
-         //   InputLayer layer = new InputLayer(1);
-         //   layer.Values[0, 0] = 4;
+            InputLayer layer;
+            AffineLayer affineLayer;
+
+            InputLayer layer = new InputLayer(1, );
+            layer.Values[0, 0] = 4;
 
             AffineLayer affineLayer = new AffineLayer(1, new ReLU());
             affineLayer.ForwardPass(layer);

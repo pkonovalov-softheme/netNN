@@ -5,6 +5,7 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLib;
+using CoreLib.Layers;
 
 namespace netNN
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreLib.Layers;
 
 namespace CoreLib
 {
@@ -21,7 +22,8 @@ namespace CoreLib
 
         readonly IActivationFunction _activation;
 
-        public AffineLayer(int unitsCount, IActivationFunction activation) : base(unitsCount)
+        public AffineLayer(int unitsCount, IActivationFunction activation, DoubleSideLayer prevLayer, DoubleSideLayer nextLayer) 
+            : base(unitsCount, prevLayer, nextLayer)
         {
             _activation = activation;
             _weights = new Matrix(unitsCount, 1);
@@ -33,41 +35,35 @@ namespace CoreLib
             get { return _weights; }
         }
 
-        public void ForwardPass(BasicLayer prevLayer)
+        public void ForwardPass(ValueLayer prevLayer)
         {
-            // Values = prevLayer.Values * _weights + _biases;
+            // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
             Matrix.NonLinearTransform(Values, _weights, prevLayer.Values, _biases, _activation.Forward);
         }
 
-        public void BackwardPass(DoubleSideLayer prevLayer)
+        public void BackwardPass()
         {
-            ComputeGradient(prevLayer);
+            ComputeGradient();
             ApplyGradient();
         }
 
-        private void ComputeGradient(DoubleSideLayer prevLayer)
+        private void ComputeGradient()
         {
-            if (prevLayer != null)
-            {
-                Matrix.ValidateMatricesDims(prevLayer.Gradients, Gradients);
-            }
+            Matrix.ValidateMatricesDims(NextLayer.Gradients, Gradients);
 
             for (int raw = 0; raw < Gradients.Rows; raw++)
             {
                 for (int column = 0; column < Gradients.Columns; column++)
                 {
                     double x = Values[raw, column]; // Current value
-                    double dy = Gradients[raw, column]; // Current gradient
+                    double dy = NextLayer.Gradients[raw, column]; // Current gradient
 
                     double df = _activation.Gradient(x, dy);
                     double dw = x*df;
                     _biasGrad = df;
 
-                    if (prevLayer != null)
-                    {
-                        prevLayer.Gradients[raw, column] += dw; // Take the gradient in output unit and chain it with the local gradients
-                    }
+                    Gradients[raw, column] += dw; // Take the gradient in output unit and chain it with the local gradients
                 }
             }
         }

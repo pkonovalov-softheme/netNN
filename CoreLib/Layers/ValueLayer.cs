@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CoreLib
 {
-    public abstract class BasicLayer
+    public abstract class ValueLayer
     {
         public Matrix Values { get; protected set; }
 
-        protected BasicLayer(int unitsCount)
+        protected ValueLayer(int unitsCount)
         {
             Values = new Matrix(unitsCount, 1);
         }
