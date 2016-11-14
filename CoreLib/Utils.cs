@@ -29,5 +29,10 @@ namespace CoreLib
                 return diff / (absA + absB) < epsilon;
             }
         }
+
+        public static double GetRandomNumber(Random random, double minimum, double maximum)
+        {
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
     }
 }

@@ -1,12 +1,18 @@
-﻿namespace CoreLib.Layers
-{
-    public class OutputLayer : GradLayer
-    {
-        private readonly DoubleSideLayer _prevLayer;
+﻿using System;
+using System.Collections.Generic;
 
-        public OutputLayer(int unitsCount, DoubleSideLayer prevLayer) : base(unitsCount)
+namespace CoreLib.Layers
+{
+    public class OutputLayer : DoubleSideLayer
+    {
+        public OutputLayer(int unitsCount) : base(unitsCount)
         {
-            _prevLayer = prevLayer;
+        }
+
+        private new DoubleSideLayer NextLayer
+        {
+            get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
+            set { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
         }
     }
 }

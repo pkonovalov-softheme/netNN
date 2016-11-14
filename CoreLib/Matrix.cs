@@ -175,7 +175,6 @@ namespace CoreLib
             }
         }
 
-
         public static Matrix operator -(Matrix m1, Matrix m2)
         {
 

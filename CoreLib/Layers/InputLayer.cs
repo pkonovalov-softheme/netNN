@@ -1,20 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CoreLib.Layers
 {
-    public class InputLayer : GradLayer
+    public sealed class InputLayer : DoubleSideLayer
     {
-        private readonly LinkedListNode<DoubleSideLayer> _layersListNode;
-        protected readonly DoubleSideLayer NextLayer;
-
-        public InputLayer(int unitsCount, LinkedListNode<DoubleSideLayer> layersListNode) : base(unitsCount)
+        public InputLayer(int unitsCount) : base(unitsCount)
         {
-            _layersListNode = layersListNode;
         }
 
-        public LinkedListNode<DoubleSideLayer> LayersListNode
+        private new DoubleSideLayer PrevLayer
         {
-            get { return _layersListNode; }
+            get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
+            set { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
         }
     }
 }

@@ -60,7 +60,7 @@ namespace netNN
                     Console.WriteLine(dif);
                 }
 
-                affineLayer.BackwardPass(inputLayer);
+                affineLayer.BackwardPass();
 
             }
         }

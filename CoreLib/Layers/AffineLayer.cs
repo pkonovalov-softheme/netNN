@@ -16,30 +16,25 @@ namespace CoreLib
     {
         const double LearningRate = 0.001;
 
-        private readonly Matrix _weights;
         private readonly Matrix _biases;
         private double _biasGrad;
 
         readonly IActivationFunction _activation;
 
-        public AffineLayer(int unitsCount, IActivationFunction activation, DoubleSideLayer prevLayer, DoubleSideLayer nextLayer) 
-            : base(unitsCount, prevLayer, nextLayer)
+        public AffineLayer(int unitsCount, IActivationFunction activation) : base(unitsCount)
         {
             _activation = activation;
-            _weights = new Matrix(unitsCount, 1);
+            Weights = new Matrix(unitsCount, 1);
             _biases = new Matrix(unitsCount, 1);
         }
 
-        public Matrix Weights
-        {
-            get { return _weights; }
-        }
+        public Matrix Weights { get; }
 
         public void ForwardPass(ValueLayer prevLayer)
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
-            Matrix.NonLinearTransform(Values, _weights, prevLayer.Values, _biases, _activation.Forward);
+            Matrix.NonLinearTransform(Values, Weights, prevLayer.Values, _biases, _activation.Forward);
         }
 
         public void BackwardPass()
@@ -77,7 +72,9 @@ namespace CoreLib
                 for (int column = 0; column < Gradients.Columns; column++)
                 {
                     Weights[raw, column] -= Gradients[raw, column]*LearningRate;
+                    Gradients[raw, column] = 0; // Zero out grad. In some cases we can not make it zero after single update. For example for large minibatches. 
                     _biases[raw, column] -= _biasGrad * LearningRate;
+                    _biasGrad = 0;
                 }
             }
         }
