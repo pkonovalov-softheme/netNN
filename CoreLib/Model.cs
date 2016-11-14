@@ -9,41 +9,63 @@ namespace CoreLib
 {
     public class Model
     {
-        readonly LinkedList<DoubleSideLayer> _layers = new LinkedList<DoubleSideLayer>();
+        private readonly LinkedList<DoubleSideLayer> _layers = new LinkedList<DoubleSideLayer>();
 
         public Model(int inputsCount, int outputsCount)
         {
-            AddLayerInternal(new InputLayer(inputsCount));
-            AddLayerInternal(new OutputLayer(inputsCount));
-        }
+            var inputLayer = new InputLayer(inputsCount);
+            _layers.AddFirst(inputLayer);
+            inputLayer.SetListNode(_layers.First);
+
+            var outputLayer = new OutputLayer(outputsCount);
+            _layers.AddLast(outputLayer);
+            outputLayer.SetListNode(_layers.Last);
+       }
 
         public InputLayer InputLayer => (InputLayer)_layers.First.Value;
 
         public OutputLayer OutputLayer => (OutputLayer)_layers.Last.Value;
 
-        public void AddAffineLayer(int unitsCount, IActivationFunction fucntion)
+        public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {
-            AddLayerInternal(new AffineLayer(unitsCount, fucntion));
+            AddLayerInternal(new AffineLayer(unitsCount, activationType));
+        }
+
+        public void ForwardPass()
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                layer.ForwardPass();
+            }
+        }
+
+        public void BackwardPass()
+        {
+            foreach (DoubleSideLayer layer in AffineLayers())
+            {
+                layer.BackwardPass();
+            }
+        }
+
+        public void InitWithRandomWeights()
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                Initialiser.InitRndUniform(layer.Weights);
+            }
+        }
+
+        public AffineLayer this[int key] => AffineLayers().ElementAt(key);
+
+        private IEnumerable<AffineLayer> AffineLayers()
+        {
+            return _layers.OfType<AffineLayer>();
         }
 
         private void AddLayerInternal(DoubleSideLayer layer)
         {
             _layers.AddBefore(_layers.Last, layer);
-            LinkedListNode<DoubleSideLayer> node = _layers.Last;
-            node.Value.SetListNode(node);
-        }
-
-        public DoubleSideLayer this[int key]
-        {
-            get
-            {
-                if (key > _layers.Count - 2)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
-                return _layers.ElementAt(key + 1);
-            }
+            layer.SetListNode(_layers.Last.Previous);
         }
     }
 }

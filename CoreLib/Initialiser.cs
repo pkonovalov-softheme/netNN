@@ -10,6 +10,17 @@ namespace CoreLib
     {
         private static Random _rnd = new Random();
 
+        public static void InitWithConstValue(Matrix matrix, double value)
+        {
+            for (int r = 0; r < matrix.Rows; r++)
+            {
+                for (int c = 0; c < matrix.Columns; c++)
+                {
+                    matrix[r, c] = value;
+                }
+            }
+        }
+
         public static void InitRndUniform(Matrix matrix, int seed = 0, double minimum = 0, double maximum = 0)
         {
             if (maximum < minimum)

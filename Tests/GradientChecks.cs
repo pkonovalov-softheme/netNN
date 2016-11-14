@@ -12,16 +12,6 @@ namespace Tests
     [TestClass]
     public class GradientChecks
     {
-
-        [TestMethod]
-        public void TestForwardPassIsZero()
-        {
-            Model model = new Model(1, 1);
-            model.InputLayer.Values[0, 0] = 4;
-            model.AddAffineLayer(1, new ReLU());
-            Assert.AreEqual(affineLayer.Values[0, 0], 0);
-        }
-
         [TestMethod]
         public void TestSingleGradFlow()
         {
@@ -29,18 +19,17 @@ namespace Tests
             double targetY = 10;
             double prevAbsDif = 0;
 
-
             Model model = new Model(1, 1);
-            AffineLayer affineLayer = new AffineLayer(1, new ReLU());
-
-            OutputLayer outputLayer = new OutputLayer(1);
+            model.InputLayer.Values[0, 0] = 0.02; 
+            model.AddAffineLayer(1, ActivationType.ReLU);
+            model.InitWithRandomWeights();
 
             for (int i = 0; i < passCount; i++)
             {
-                affineLayer.ForwardPass();
+                model.ForwardPass();
 
-                double absDif = Math.Abs(affineLayer.Values[0, 0] - targetY);
-                outputLayer.Gradients[0, 0] = absDif;
+                double absDif = Math.Abs(model[0].Values[0, 0] - targetY);
+                model.OutputLayer.Gradients[0, 0] = absDif;
 
                 if (prevAbsDif > 0)
                 {
@@ -48,8 +37,7 @@ namespace Tests
                 }
 
                 prevAbsDif = absDif;
-
-                affineLayer.BackwardPass();
+                model[0].BackwardPass();
             }
 
         }

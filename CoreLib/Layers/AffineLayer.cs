@@ -21,23 +21,23 @@ namespace CoreLib
 
         readonly IActivationFunction _activation;
 
-        public AffineLayer(int unitsCount, IActivationFunction activation) : base(unitsCount)
+        public AffineLayer(int unitsCount, ActivationType activationType) : base(unitsCount)
         {
-            _activation = activation;
+            _activation = ActivationHelper.GetActivationFunction(activationType);
             Weights = new Matrix(unitsCount, 1);
             _biases = new Matrix(unitsCount, 1);
         }
 
         public Matrix Weights { get; }
 
-        public void ForwardPass()
+        public new void ForwardPass()
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
             Matrix.NonLinearTransform(Values, Weights, PrevLayer.Values, _biases, _activation.Forward);
         }
 
-        public void BackwardPass()
+        public new void BackwardPass()
         {
             ComputeGradient();
             ApplyGradient();

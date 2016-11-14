@@ -41,27 +41,26 @@ namespace netNN
             const int passCount = 10000;
             double targetY = 5;
 
-            InputLayer inputLayer = new InputLayer(1);
-            AffineLayer affineLayer = new AffineLayer(1, new ReLU());
-            inputLayer.Values[0, 0] = 0.01; //Current value
-            affineLayer.Weights[0, 0] = 0.02; 
+            Model model = new Model(1, 1);
+            model.AddAffineLayer(1, ActivationType.ReLU);
+            model[0].Values[0, 0] = 0.01; //Current value
+            model[0].Weights[0, 0] = 0.02; 
 
             // OutputLayer outputLayer = new OutputLayer(1);
 
             for (int i = 0; i < passCount; i++)
             {
-                affineLayer.ForwardPass(inputLayer);
+                model[0].ForwardPass();
 
-                double dif = affineLayer.Values[0, 0] - targetY;
-                affineLayer.Gradients[0, 0] = dif;
+                double dif = model[0].Values[0, 0] - targetY;
+                model[0].Gradients[0, 0] = dif;
 
                 if (i%1000 == 0)
                 {
                     Console.WriteLine(dif);
                 }
 
-                affineLayer.BackwardPass();
-
+                model[0].BackwardPass();
             }
         }
     }

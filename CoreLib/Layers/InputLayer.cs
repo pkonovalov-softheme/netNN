@@ -9,7 +9,7 @@ namespace CoreLib.Layers
         {
         }
 
-        private new DoubleSideLayer PrevLayer
+        public new DoubleSideLayer PrevLayer
         {
             get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
             set { throw new InvalidOperationException("There is no PrevLayer for input layer"); }

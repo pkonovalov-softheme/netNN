@@ -9,6 +9,12 @@ namespace CoreLib.Layers
         {
         }
 
+        public new void SetListNode(LinkedListNode<DoubleSideLayer> layersListNode)
+        {
+            LayersListNode = layersListNode;
+            Values = PrevLayer.Values;
+        }
+
         private new DoubleSideLayer NextLayer
         {
             get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
