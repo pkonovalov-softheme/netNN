@@ -54,16 +54,61 @@ namespace CoreLib
             }
         }
 
-        // y = ax + b
-        public static void LinearTransform(ref Matrix y, Matrix a, Matrix x, Matrix b)
+        // resultY = ax + b
+        public static void LinearTransform(Matrix resultY, Matrix a, Matrix x, Matrix b)
         {
-            
+            ValidateMatricesDims(resultY, a, x, b);
+
+            for (int raw = 0; raw < resultY.Rows; raw++)
+            {
+                for (int column = 0; column < resultY.Columns; column++)
+                {
+                    resultY[raw, column] = a[raw, column] * resultY[raw, column] + b[raw, column];
+                }
+            }
+        }
+
+        /// <summary>
+        /// resultY = f(ax + b)
+        /// </summary>
+        public static void NonLinearTransform(Matrix resultY, Matrix w, Matrix x, Matrix b, Func<double, double> f)
+        {
+            ValidateMatricesDims(resultY, w, x, b);
+
+            for (int raw = 0; raw < resultY.Rows; raw++)
+            {
+                for (int column = 0; column < resultY.Columns; column++)
+                {
+                    resultY[raw, column] = f(w[raw, column] * x[raw, column] + b[raw, column]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Performs arbitrary operation on sourceMatrix and write results in resultMatrix
+        /// </summary>
+        public static void ArbitraryOperation(Matrix resultMatrix, Matrix sourceMatrix, Func<double, double> operation)
+        {
+            ValidateMatricesDims(resultMatrix, sourceMatrix);
+
+            for (int raw = 0; raw < sourceMatrix.Rows; raw++)
+            {
+                for (int column = 0; column < sourceMatrix.Columns; column++)
+                {
+                    resultMatrix[raw, column] = operation(sourceMatrix[raw, column]);
+                }
+            }
         }
 
         public static Matrix operator *(Matrix m1, Matrix m2)
         {
             Matrix resultMatrix = new Matrix(m1.Rows, m2.Columns);
+            MultiplyMatrices(ref resultMatrix, m1, m2);
+            return resultMatrix;
+        }
 
+        public static void MultiplyMatrices(ref Matrix resultMatrix, Matrix m1, Matrix m2)
+        {
             if (m1.Columns != m2.Rows)
             {
                 throw new InvalidOperationException("The number of columns of the 1st matrix must equal the number of rows of the 2nd matrix.");
@@ -80,15 +125,12 @@ namespace CoreLib
                         double curM1Value = m1[curM1Raw, curM1ColumnM2Raw];
                         double curM2Value = m2[curM1ColumnM2Raw, curM2Column];
 
-                        dotProduct += (curM1Value*curM2Value);
+                        dotProduct += (curM1Value * curM2Value);
                     }
-
 
                     resultMatrix[curM1Raw, curM2Column] = dotProduct;
                 }
             }
-
-            return resultMatrix;
         }
 
         public static Matrix operator *(double scalar, Matrix m)
@@ -111,20 +153,18 @@ namespace CoreLib
 
         public static Matrix operator +(Matrix m1, Matrix m2)
         {
-            if (m1.Rows != m2.Rows)
-            {
-                throw new InvalidOperationException("Matrix rows must the same.");
-            }
+            var resultMatrix = new Matrix(m1.Rows, m1.Columns);
+            AddMatrices(ref resultMatrix, m1, m2);
+            return resultMatrix;
+        }
 
-            if (m1.Columns != m2.Columns)
-            {
-                throw new InvalidOperationException("Matrix columns must the same.");
-            }
+        public static void AddMatrices(ref Matrix resultMatrix, Matrix m1, Matrix m2)
+        {
+            ValidateMatricesDims(m1, m2);
 
             int rows = m1.Rows;
             int columns = m1.Columns;
 
-            var resultMatrix = new Matrix(m1.Rows, m1.Columns);
 
             for (int raws = 0; raws < rows; raws++)
             {
@@ -133,26 +173,24 @@ namespace CoreLib
                     resultMatrix[raws, column] = m1[raws, column] + m2[raws, column];
                 }
             }
-
-            return resultMatrix;
         }
+
 
         public static Matrix operator -(Matrix m1, Matrix m2)
         {
-            if (m1.Rows != m2.Rows)
-            {
-                throw new InvalidOperationException("Matrix rows must the same.");
-            }
 
-            if (m1.Columns != m2.Columns)
-            {
-                throw new InvalidOperationException("Matrix columns must the same.");
-            }
+            var resultMatrix = new Matrix(m1.Rows, m1.Columns);
+            SubstractMatrices(ref resultMatrix, m1, m2);
+            return resultMatrix;
+        }
+
+        public static void SubstractMatrices(ref Matrix resultMatrix, Matrix m1, Matrix m2)
+        {
+            ValidateMatricesDims(m1, m2);
 
             int rows = m1.Rows;
             int columns = m1.Columns;
 
-            var resultMatrix = new Matrix(m1.Rows, m1.Columns);
 
             for (int raws = 0; raws < rows; raws++)
             {
@@ -161,8 +199,6 @@ namespace CoreLib
                     resultMatrix[raws, column] = m1[raws, column] - m2[raws, column];
                 }
             }
-
-            return resultMatrix;
         }
 
         protected bool Equals(Matrix other)
@@ -200,5 +236,16 @@ namespace CoreLib
         }
 
         private readonly double[,] _values;
+
+        public static void ValidateMatricesDims(params Matrix[] matrices)
+        {
+#if DEBUG
+            Matrix firstMatrix = matrices.First();
+            if (matrices.Any(m => m.Rows != firstMatrix.Rows) || matrices.Any(m => m.Columns != firstMatrix.Columns))
+            {
+                throw new InvalidOperationException("All matrices rows and colums must be the same.");
+            }
+#endif
+        }
     }
 }

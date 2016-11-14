@@ -11,7 +11,7 @@ namespace CoreLib
         // y = f(x)
         double Forward(double value);
 
-        // return dx from dy
-        double Gradient(double dy);
+        // return dx from gradY
+        double Gradient(double x, double gradY);
     }
 }

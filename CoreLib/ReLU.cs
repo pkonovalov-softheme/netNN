@@ -6,20 +6,28 @@ using System.Threading.Tasks;
 
 namespace CoreLib
 {
-    class ReLU : IActivationFunction
+    public class ReLU : IActivationFunction
     {
         /// <summary>
-        /// y=max(0, x).
+        /// y = max(0, x).
         /// </summary>
-        public double Forward(double value)
+        public double Forward(double x)
         {
-            return Math.Max(0, value);
+            return Math.Max(0, x);
         }
 
-        public double Gradient(double x, double dy)
+        /// <summary>
+        /// f'(x)=
+        /// { 1, if x > 0
+        /// { 0, otherwise
+        /// </summary>
+        /// <param name="x">current x value</param>
+        /// <param name="gradY">source grad from backprob</param>
+        /// <returns></returns>
+        public double Gradient(double x, double gradY)
         {
-            var dx = x > 0 ? dy : 0.0;
-            return dx;
+            var gradX = x > 0 ? gradY : 0.0;
+            return gradX;
         }
     }
 }
