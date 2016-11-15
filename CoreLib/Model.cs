@@ -31,6 +31,14 @@ namespace CoreLib
             AddLayerInternal(new AffineLayer(unitsCount, activationType));
         }
 
+        public double FirstOutputValue => OutputLayer.Values[0, 0];
+
+        public double FirstInputValue
+        {
+            get { return InputLayer.Values[0, 0]; }
+            set { InputLayer.Values[0, 0] = value; }
+        }
+
         public void ForwardPass()
         {
             foreach (AffineLayer layer in AffineLayers())

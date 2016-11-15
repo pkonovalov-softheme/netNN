@@ -28,9 +28,9 @@ namespace CoreLib
             Biases = new Matrix(unitsCount, 1);
         }
 
-        public Matrix Weights { get; }
+        public Matrix Weights { get; set; }
 
-        public Matrix Biases { get; private set; }
+        public Matrix Biases { get; set; }
 
         public new void ForwardPass()
         {
@@ -57,7 +57,7 @@ namespace CoreLib
             ApplyGradient();
         }
 
-        private void ComputeGradient()
+        public void ComputeGradient()
         {
             Matrix.ValidateMatricesDims(NextLayer.Gradients, Gradients);
 
@@ -65,7 +65,7 @@ namespace CoreLib
             {
                 for (int column = 0; column < Gradients.Columns; column++)
                 {
-                    double x = Values[raw, column]; // Current value
+                    double x = PrevLayer.Values[raw, column]; // Current value
                     double dy = NextLayer.Gradients[raw, column]; // Current gradient
 
                     double df = _activation.Gradient(x, dy);
@@ -86,7 +86,7 @@ namespace CoreLib
 #endif 
         }
 
-        private void ApplyGradient()
+        public void ApplyGradient()
         {
             Matrix.ValidateMatricesDims(Gradients, Values);
 
