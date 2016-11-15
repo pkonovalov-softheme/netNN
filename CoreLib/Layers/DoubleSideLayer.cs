@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace CoreLib.Layers
 {
-    public abstract class DoubleSideLayer : GradLayer
+    public abstract class DoubleSideLayer : BaseLayer
     {
         protected LinkedListNode<DoubleSideLayer> LayersListNode;
 

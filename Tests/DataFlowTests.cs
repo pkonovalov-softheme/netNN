@@ -22,7 +22,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void ForwardValueFlow_1Layer()
+        public void ForwardValueFlow_1Layer_N1()
         {
             Model model = new Model(1, 1);
             model.InputLayer.Values[0, 0] = 4;
@@ -31,6 +31,42 @@ namespace Tests
 
             model.ForwardPass();
             Assert.AreEqual(model.OutputLayer.Values[0, 0], 4);
+        }
+
+        [TestMethod]
+        public void ForwardValueFlow_1Layer_N2()
+        {
+            Model model = new Model(1, 1);
+            model.InputLayer.Values[0, 0] = 4;
+            model.AddAffineLayer(1, ActivationType.ReLU);
+            Initialiser.InitWithConstValue(model[0].Weights, 0.5);
+
+            model.ForwardPass();
+            Assert.AreEqual(model.OutputLayer.Values[0, 0], 2);
+        }
+
+        [TestMethod]
+        public void ForwardValueFlow_1Layer_N3()
+        {
+            Model model = new Model(1, 1);
+            model.InputLayer.Values[0, 0] = 4;
+            model.AddAffineLayer(1, ActivationType.ReLU);
+            Initialiser.InitWithConstValue(model[0].Weights, 2);
+
+            model.ForwardPass();
+            Assert.AreEqual(model.OutputLayer.Values[0, 0], 8);
+        }
+
+        [TestMethod]
+        public void ForwardValueFlow_1Layer_N4()
+        {
+            Model model = new Model(1, 1);
+            model.InputLayer.Values[0, 0] = 4;
+            model.AddAffineLayer(1, ActivationType.ReLU);
+            Initialiser.InitWithConstValue(model[0].Weights, 2);
+            model[0].Biases[0, 0] = 3;
+            model.ForwardPass();
+            Assert.AreEqual(model.OutputLayer.Values[0, 0], 11);
         }
 
         [TestMethod]
@@ -43,7 +79,6 @@ namespace Tests
 
             Initialiser.InitWithConstValue(model[0].Weights, 1);
             Initialiser.InitWithConstValue(model[1].Weights, 1);
-
 
             model.ForwardPass();
             Assert.AreEqual(model.OutputLayer.Values[0, 0], 4);

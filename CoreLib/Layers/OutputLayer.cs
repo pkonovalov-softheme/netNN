@@ -12,13 +12,14 @@ namespace CoreLib.Layers
         public new void SetListNode(LinkedListNode<DoubleSideLayer> layersListNode)
         {
             LayersListNode = layersListNode;
-            Values = PrevLayer.Values;
         }
+
+        public new Matrix Values => PrevLayer.Values;
 
         private new DoubleSideLayer NextLayer
         {
-            get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
-            set { throw new InvalidOperationException("There is no PrevLayer for input layer"); }
+            get { throw new InvalidOperationException("There is no NextLayer for output layer."); }
+            set { throw new InvalidOperationException("There is no NextLayer for output layer."); }
         }
     }
 }

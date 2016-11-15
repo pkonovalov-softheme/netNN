@@ -21,25 +21,25 @@ namespace CoreLib
             }
         }
 
-        public static void InitRndUniform(Matrix matrix, int seed = 0, double minimum = 0, double maximum = 0)
+        public static void InitRndUniform(Matrix matrix, int? seed = null, double? minimum = null, double? maximum = null)
         {
-            if (maximum < minimum)
+            if ((minimum.HasValue || maximum.HasValue) && (maximum.GetValueOrDefault() < minimum.GetValueOrDefault()))
             {
                 throw new ArgumentException("maximum < minimum");
             }
 
-            if (seed > 0)
+            if (seed.HasValue)
             {
-                _rnd = new Random(seed);
+                _rnd = new Random(seed.Value);
             }
 
             for (int r = 0; r < matrix.Rows; r++)
             {
                 for (int c = 0; c < matrix.Columns; c++)
                 {
-                    if (minimum > 0 || maximum > 0)
+                    if (minimum.HasValue || maximum.HasValue)
                     {
-                        matrix[r, c] = Utils.GetRandomNumber(_rnd, minimum, maximum);
+                        matrix[r, c] = Utils.GetRandomNumber(_rnd, minimum.GetValueOrDefault(), maximum.GetValueOrDefault());
 
                     }
                     else

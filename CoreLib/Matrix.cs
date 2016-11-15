@@ -229,6 +229,23 @@ namespace CoreLib
             return Equals((Matrix)obj);
         }
 
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int raw = 0; raw < Rows; raw++)
+            {
+                for (int column = 0; column < Columns; column++)
+                {
+                    sb.AppendFormat("{0} ", _values[raw, column]);
+                }
+
+                sb.AppendLine(Environment.NewLine + Environment.NewLine);
+            }
+
+            return sb.ToString();
+        }
+
         public override int GetHashCode()
         {
             return _values?.GetHashCode() ?? 0;

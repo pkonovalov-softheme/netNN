@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,8 @@ namespace CoreLib
     /// </summary>
     public sealed class AffineLayer : DoubleSideLayer
     {
-        const double LearningRate = 0.001;
+        const double LearningRate = 0.01;
 
-        private readonly Matrix _biases;
         private double _biasGrad;
 
         readonly IActivationFunction _activation;
@@ -25,16 +25,30 @@ namespace CoreLib
         {
             _activation = ActivationHelper.GetActivationFunction(activationType);
             Weights = new Matrix(unitsCount, 1);
-            _biases = new Matrix(unitsCount, 1);
+            Biases = new Matrix(unitsCount, 1);
         }
 
         public Matrix Weights { get; }
+
+        public Matrix Biases { get; private set; }
 
         public new void ForwardPass()
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
-            Matrix.NonLinearTransform(Values, Weights, PrevLayer.Values, _biases, _activation.Forward);
+            Matrix.NonLinearTransform(Values, Weights, PrevLayer.Values, Biases, _activation.Forward);
+
+#if DEBUG
+            if (GeneralSettings.ValuesTracingEnabled)
+            {
+                Debug.WriteLine("Forward pass." + Environment.NewLine + "Values:");
+                Debug.WriteLine(Values.ToString());
+                Debug.WriteLine("Weights:");
+                Debug.WriteLine(Weights.ToString());
+                Debug.WriteLine("Biases:");
+                Debug.WriteLine(Biases.ToString());
+            }
+#endif 
         }
 
         public new void BackwardPass()
@@ -61,6 +75,15 @@ namespace CoreLib
                     Gradients[raw, column] += dw; // Take the gradient in output unit and chain it with the local gradients
                 }
             }
+
+#if DEBUG
+            if (GeneralSettings.GradientsTracingEnabled)
+            {
+                Debug.WriteLine("Backward pass. /n Weights gradients:");
+                Debug.WriteLine(Gradients.ToString());
+                Debug.WriteLine("Bias gradient: " + _biasGrad);
+            }
+#endif 
         }
 
         private void ApplyGradient()
@@ -73,7 +96,7 @@ namespace CoreLib
                 {
                     Weights[raw, column] -= Gradients[raw, column]*LearningRate;
                     Gradients[raw, column] = 0; // Zero out grad. In some cases we can not make it zero after single update. For example for large minibatches. 
-                    _biases[raw, column] -= _biasGrad * LearningRate;
+                    Biases[raw, column] -= _biasGrad * LearningRate;
                     _biasGrad = 0;
                 }
             }

@@ -47,11 +47,11 @@ namespace CoreLib
             }
         }
 
-        public void InitWithRandomWeights()
+        public void InitWithRandomWeights(int? seed = null)
         {
             foreach (AffineLayer layer in AffineLayers())
             {
-                Initialiser.InitRndUniform(layer.Weights);
+                Initialiser.InitRndUniform(layer.Weights, seed);
             }
         }
 
