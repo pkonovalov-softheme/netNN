@@ -10,5 +10,10 @@ namespace CoreLib
     {
         public static bool ValuesTracingEnabled = false;
         public static bool GradientsTracingEnabled = false;
+
+        static GeneralSettings()
+        {
+            System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.TextWriterTraceListener(Console.Out));
+        }
     }
 }

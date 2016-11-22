@@ -40,19 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activations.cs" />
+    <Compile Include="Activations\Activations.cs" />
+    <Compile Include="Activations\Identity.cs" />
+    <Compile Include="CostsFunctions\Abs.cs" />
     <Compile Include="GeneralSettings.cs" />
     <Compile Include="Initialiser.cs" />
+    <Compile Include="IOperator.cs" />
     <Compile Include="Layers\AffineLayer.cs" />
     <Compile Include="Layers\BaseLayer.cs" />
-    <Compile Include="IActivationFunction.cs" />
+    <Compile Include="Activations\IActivationFunction.cs" />
+    <Compile Include="Layers\CostLayer.cs" />
     <Compile Include="Layers\InputLayer.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Layers\OutputLayer.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReLU.cs" />
+    <Compile Include="Activations\ReLU.cs" />
     <Compile Include="Layers\DoubleSideLayer.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

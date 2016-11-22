@@ -9,6 +9,16 @@ namespace CoreLib.Layers
         {
         }
 
+        public override void ForwardPass()
+        {
+            throw new InvalidOperationException();
+        }
+
+        public override void BackwardPass()
+        {
+            throw new InvalidOperationException();
+        }
+
         public new DoubleSideLayer PrevLayer
         {
             get { throw new InvalidOperationException("There is no PrevLayer for input layer"); }

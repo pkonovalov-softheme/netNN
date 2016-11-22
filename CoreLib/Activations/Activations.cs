@@ -5,10 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreLib.Activations;
 
 namespace CoreLib
 {
-    public enum ActivationType { ReLU};
+    public enum ActivationType { ReLU, Identity };
 
     public static class ActivationHelper
     {
@@ -18,6 +19,8 @@ namespace CoreLib
             {
                 case ActivationType.ReLU:
                     return new ReLU();
+                case ActivationType.Identity:
+                    return new Identity();
                 default:
                     throw new InvalidEnumArgumentException(activationType.ToString()); 
             }

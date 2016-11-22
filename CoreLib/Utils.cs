@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,14 @@ namespace CoreLib
 {
     public static class Utils
     {
+        public static void DebbuggerBreak()
+        {
+            if (Debugger.IsAttached)
+            {
+                Debugger.Break();
+            }
+        }
+
         public static bool NearlyEqual(double a, double b, double epsilon)
         {
             double absA = Math.Abs(a);

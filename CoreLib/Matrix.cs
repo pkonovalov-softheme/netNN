@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,6 +80,12 @@ namespace CoreLib
             {
                 for (int column = 0; column < resultY.Columns; column++)
                 {
+#if DEBUG
+                    if (f(w[raw, column] * x[raw, column] + b[raw, column]) == 0)
+                    {
+                        Utils.DebbuggerBreak();
+                    }
+#endif
                     resultY[raw, column] = f(w[raw, column] * x[raw, column] + b[raw, column]);
                 }
             }

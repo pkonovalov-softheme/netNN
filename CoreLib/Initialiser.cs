@@ -8,8 +8,6 @@ namespace CoreLib
 {
     public static class Initialiser
     {
-        private static Random _rnd = new Random();
-
         public static void InitWithConstValue(Matrix matrix, double value)
         {
             for (int r = 0; r < matrix.Rows; r++)
@@ -21,16 +19,11 @@ namespace CoreLib
             }
         }
 
-        public static void InitRndUniform(Matrix matrix, int? seed = null, double? minimum = null, double? maximum = null)
+        public static void InitRndUniform(Matrix matrix, Random rnd, double? minimum = null, double? maximum = null)
         {
             if ((minimum.HasValue || maximum.HasValue) && (maximum.GetValueOrDefault() < minimum.GetValueOrDefault()))
             {
                 throw new ArgumentException("maximum < minimum");
-            }
-
-            if (seed.HasValue)
-            {
-                _rnd = new Random(seed.Value);
             }
 
             for (int r = 0; r < matrix.Rows; r++)
@@ -39,12 +32,12 @@ namespace CoreLib
                 {
                     if (minimum.HasValue || maximum.HasValue)
                     {
-                        matrix[r, c] = Utils.GetRandomNumber(_rnd, minimum.GetValueOrDefault(), maximum.GetValueOrDefault());
+                        matrix[r, c] = Utils.GetRandomNumber(rnd, minimum.GetValueOrDefault(), maximum.GetValueOrDefault());
 
                     }
                     else
                     {
-                        matrix[r, c] = _rnd.NextDouble();
+                        matrix[r, c] = rnd.NextDouble();
                     }
                 }
             }

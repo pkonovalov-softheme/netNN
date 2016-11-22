@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DataFlowTests.cs" />
     <Compile Include="GradientChecks.cs" />
+    <Compile Include="LinearTests.cs" />
     <Compile Include="MatrixTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

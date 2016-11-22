@@ -32,7 +32,7 @@ namespace CoreLib
 
         public Matrix Biases { get; set; }
 
-        public new void ForwardPass()
+        public override void ForwardPass()
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
@@ -51,7 +51,7 @@ namespace CoreLib
 #endif 
         }
 
-        public new void BackwardPass()
+        public override void BackwardPass()
         {
             ComputeGradient();
             ApplyGradient();
@@ -72,7 +72,7 @@ namespace CoreLib
                     double dw = x*df;
                     _biasGrad = df;
 
-                    Gradients[raw, column] += dw; // Take the gradient in output unit and chain it with the local gradients
+                    Gradients[raw, column] = dw; // Was += Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
                 }
             }
 

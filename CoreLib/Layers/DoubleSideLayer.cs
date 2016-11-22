@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace CoreLib.Layers
 {
-    public abstract class DoubleSideLayer : BaseLayer
+    public abstract class DoubleSideLayer : BaseLayer, IOperator
     {
         protected LinkedListNode<DoubleSideLayer> LayersListNode;
 
@@ -17,13 +17,10 @@ namespace CoreLib.Layers
             LayersListNode = layersListNode;
         }
 
-        public void ForwardPass()
-        {
-        }
+        public abstract void ForwardPass();
 
-        public void BackwardPass()
-        {
-        }
+
+        public abstract void BackwardPass();
 
         public DoubleSideLayer NextLayer
         {

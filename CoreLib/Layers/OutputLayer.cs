@@ -14,6 +14,16 @@ namespace CoreLib.Layers
             LayersListNode = layersListNode;
         }
 
+        public override void ForwardPass()
+        {
+            throw new InvalidOperationException();
+        }
+
+        public override void BackwardPass()
+        {
+            throw new InvalidOperationException();
+        }
+
         public new Matrix Values => PrevLayer.Values;
 
         private new DoubleSideLayer NextLayer
