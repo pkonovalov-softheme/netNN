@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLib;
+using CoreLib.CostsFunctions;
 using CoreLib.Layers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,9 +29,8 @@ namespace Tests
             Trace.WriteLine("Seed " + seed);
             _rnd = new Random(seed);
 
-            Model model = new Model(1, 1);
+            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
             model.InputLayer.Values[0, 0] = initValue;
-            model.AddAffineLayer(1, ActivationType.ReLU);
             model.InitWithRandomValues(_rnd);
 
             Trace.WriteLine("Init value: " + initValue);
@@ -41,7 +41,7 @@ namespace Tests
         [TestMethod]
         public void PositiveGradMakeOutputSmaller()
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 5; j++)
             {
                 const int passCount = 10;
                 double prevValue = 0;
@@ -55,17 +55,18 @@ namespace Tests
                     model.ForwardPass();
 
                     double curValue = model.OutputLayer.Values[0, 0];
-                    model.OutputLayer.Gradients[0, 0] = 1;
+                   // model.OutputLayer.Gradients[0, 0] = 1;
 
                     if (!firstRun)
                     {
-                        Assert.IsTrue(curValue < prevValue, "Failed on " + i + " try");
+                        Assert.IsTrue(curValue > 0 || curValue < prevValue, "Failed on " + i + " try");
                     }
 
                     firstRun = false;
 
                     prevValue = curValue;
-                    model[0].BackwardPass();
+                    Matrix target = new Matrix(1, 1);
+                    model.BackwardPass(target);
                 }
             }
          }
@@ -115,7 +116,7 @@ namespace Tests
 
                 //double curValue = model.OutputLayer.Values[0, 0];
                 model.OutputLayer.Gradients[0, 0] = gradValue;
-                model[0].ComputeGradient();
+                model[1].ComputeGradient();
 
                 double fa = model[0].Gradients[0, 0]; // Analytical gradient - dy/dw
 

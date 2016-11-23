@@ -13,7 +13,7 @@ namespace CoreLib
     /// q = W*x
     /// dx = W*dq
     /// </summary>
-    public sealed class AffineLayer : DoubleSideLayer
+    public sealed class AffineLayer : Layer
     {
         const double LearningRate = 0.01;
 
@@ -36,7 +36,7 @@ namespace CoreLib
         {
             // Values = NextLayer.Values * _weights + _biases;
             // Values.ApplyActivation(_activation);
-            Matrix.NonLinearTransform(Values, Weights, PrevLayer.Values, Biases, _activation.Forward);
+            Matrix.NonLinearTransform(NextLayer.Values, Weights, Values, Biases, _activation.Forward);
 
 #if DEBUG
             if (GeneralSettings.ValuesTracingEnabled)

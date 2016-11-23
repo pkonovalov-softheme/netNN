@@ -3,28 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreLib.CostsFunctions;
 using CoreLib.Layers;
 
 namespace CoreLib
 {
     public class Model
     {
-        private readonly LinkedList<DoubleSideLayer> _layers = new LinkedList<DoubleSideLayer>();
+        private readonly LinkedList<Layer> _layers = new LinkedList<Layer>();
 
-        public Model(int inputsCount, int outputsCount)
+        public Model(int inputsCount, ActivationType inputActivationType, int outputsCount, ActivationType outputActivationType, CostType costType)
         {
-            var inputLayer = new InputLayer(inputsCount);
+            var inputLayer = new AffineLayer(inputsCount, inputActivationType);
             _layers.AddFirst(inputLayer);
             inputLayer.SetListNode(_layers.First);
 
-            var outputLayer = new OutputLayer(outputsCount);
+            var outputLayer = new AffineLayer(outputsCount, outputActivationType);
             _layers.AddLast(outputLayer);
             outputLayer.SetListNode(_layers.Last);
-       }
 
-        public InputLayer InputLayer => (InputLayer)_layers.First.Value;
+            OutputLayer = new LossLayer(costType, outputsCount);
+            _layers.AddLast(OutputLayer);
+            OutputLayer.SetListNode(_layers.Last);
+        }
 
-        public OutputLayer OutputLayer => (OutputLayer)_layers.Last.Value;
+        public Layer InputLayer => _layers.First.Value;
+
+        public Layer OutputLayer { get; }
 
         public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {
@@ -47,11 +52,37 @@ namespace CoreLib
             }
         }
 
-        public void BackwardPass()
+        public void InitWithConstWeights(double value)
         {
-            foreach (DoubleSideLayer layer in AffineLayers())
+            foreach (AffineLayer layer in AffineLayers())
             {
-                layer.BackwardPass();
+                Initialiser.InitWithConstValue(layer.Weights, value);
+            }
+        }
+
+        public void InitWithRandomWeights(Random rnd, double? minimum = null, double? maximum = null)
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                Initialiser.InitRndUniform(layer.Weights, rnd, minimum, maximum);
+            }
+        }
+
+        public void BackwardPass(Matrix targetValues)
+        {
+            LinkedListNode<Layer> curLayer = _layers.Last;
+            LossLayer lossLayer = (LossLayer) curLayer.Value;
+            lossLayer.ComputeLossGradients(targetValues);
+
+            while(true)
+            {
+                curLayer = curLayer.Previous;
+                if (curLayer.Previous == null)
+                {
+                    break;
+                }
+
+                curLayer.Value.BackwardPass();
             }
         }
 
@@ -71,7 +102,7 @@ namespace CoreLib
             return _layers.OfType<AffineLayer>();
         }
 
-        private void AddLayerInternal(DoubleSideLayer layer)
+        private void AddLayerInternal(Layer layer)
         {
             _layers.AddBefore(_layers.Last, layer);
             layer.SetListNode(_layers.Last.Previous);

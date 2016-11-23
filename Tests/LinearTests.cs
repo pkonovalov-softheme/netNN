@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLib;
+using CoreLib.CostsFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
@@ -15,7 +16,7 @@ namespace Tests
 
         private Model InitSimpleModel(double initValue)
         {
-            Model model = new Model(1, 1);
+            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
             model.InputLayer.Values[0, 0] = initValue;
             model.AddAffineLayer(1, ActivationType.Identity);
             model.InitWithRandomValues(_rnd);

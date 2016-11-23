@@ -3,16 +3,21 @@ using System.Diagnostics;
 
 namespace CoreLib.Layers
 {
-    public abstract class DoubleSideLayer : BaseLayer, IOperator
+    public abstract class Layer
     {
-        protected LinkedListNode<DoubleSideLayer> LayersListNode;
+        protected LinkedListNode<Layer> LayersListNode;
 
-        protected DoubleSideLayer(int unitsCount)
-            : base(unitsCount)
+        public Matrix Gradients { get; protected set; }
+
+        public Matrix Values { get; protected set; }
+
+        protected Layer(int unitsCount)
         {
+            Gradients = new Matrix(unitsCount, 1);
+            Values = new Matrix(unitsCount, 1);
         }
 
-        public void SetListNode(LinkedListNode<DoubleSideLayer> layersListNode)
+        public void SetListNode(LinkedListNode<Layer> layersListNode)
         {
             LayersListNode = layersListNode;
         }
@@ -22,7 +27,7 @@ namespace CoreLib.Layers
 
         public abstract void BackwardPass();
 
-        public DoubleSideLayer NextLayer
+        public Layer NextLayer
         {
             get
             {
@@ -36,7 +41,7 @@ namespace CoreLib.Layers
             }
         }
 
-        public DoubleSideLayer PrevLayer
+        public Layer PrevLayer
         {
             get
             {

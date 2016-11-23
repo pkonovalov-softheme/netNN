@@ -5,6 +5,7 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using CoreLib;
+using CoreLib.CostsFunctions;
 using CoreLib.Layers;
 
 namespace netNN
@@ -41,7 +42,7 @@ namespace netNN
             const int passCount = 10000;
             double targetY = 5;
 
-            Model model = new Model(1, 1);
+            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
             model.AddAffineLayer(1, ActivationType.ReLU);
             model[0].Values[0, 0] = 0.01; //Current value
             model[0].Weights[0, 0] = 0.02; 
