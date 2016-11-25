@@ -29,7 +29,7 @@ namespace CoreLib
 
         public Layer InputLayer => _layers.First.Value;
 
-        public Layer OutputLayer { get; }
+        public LossLayer OutputLayer { get; }
 
         public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {

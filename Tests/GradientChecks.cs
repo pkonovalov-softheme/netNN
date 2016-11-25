@@ -39,7 +39,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void PositiveGradMakeOutputSmaller()
+        public void UnderShootingMakeOutputLarger()
         {
             for (int j = 0; j < 5; j++)
             {
@@ -54,25 +54,24 @@ namespace Tests
                 {
                     model.ForwardPass();
 
-                    double curValue = model.OutputLayer.Values[0, 0];
-                   // model.OutputLayer.Gradients[0, 0] = 1;
+                    double curValue = model.FirstOutputValue;
 
                     if (!firstRun)
                     {
-                        Assert.IsTrue(curValue > 0 || curValue < prevValue, "Failed on " + i + " try");
+                        Assert.IsTrue(curValue == 0 || curValue > prevValue, "Failed on " + i + " try");
                     }
 
                     firstRun = false;
 
                     prevValue = curValue;
-                    Matrix target = new Matrix(1, 1);
+                    var target = new Matrix(curValue + 1);
                     model.BackwardPass(target);
                 }
             }
          }
 
         [TestMethod]
-        public void NegativeGradMakeOutputLarger()
+        public void OverShootingMakeOutputSmaller()
         {
             const int passCount = 10;
             double prevValue = 0;
@@ -84,18 +83,20 @@ namespace Tests
             {
                 model.ForwardPass();
 
-                double curValue = model.OutputLayer.Values[0, 0];
-                model.OutputLayer.Gradients[0, 0] = -1;
+                double curValue = model.FirstOutputValue;
 
                 if (!firstRun)
                 {
-                    Assert.IsTrue(curValue > prevValue);
+                    Assert.IsTrue(curValue == 0 || curValue < prevValue, "Failed on " + i + " try");
+
                 }
 
                 firstRun = false;
 
                 prevValue = curValue;
-                model[0].BackwardPass();
+
+                Matrix target = new Matrix(curValue - 1);
+                model.BackwardPass(target);
             }
         }
 
@@ -105,7 +106,7 @@ namespace Tests
             const double inputValue = 5;
             const int passCount = 10;
             const double h = 1e-5;
-            const double gradValue = 1;
+            const double targetValue = 7;
 
             Model model = InitSimpleModel(inputValue);
 
@@ -114,9 +115,9 @@ namespace Tests
                 model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
                 model.ForwardPass();
 
-                //double curValue = model.OutputLayer.Values[0, 0];
-                model.OutputLayer.Gradients[0, 0] = gradValue;
+                model.OutputLayer.ComputeLossGradients(new Matrix(targetValue));
                 model[1].ComputeGradient();
+                model[0].ComputeGradient();
 
                 double fa = model[0].Gradients[0, 0]; // Analytical gradient - dy/dw
 

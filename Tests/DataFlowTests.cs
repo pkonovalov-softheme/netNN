@@ -16,9 +16,9 @@ namespace Tests
         public void ForwardPassedZero()
         {
             Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
-            model.InputLayer.Values[0, 0] = 4;
+            model.FirstInputValue = 4;
             model.ForwardPass();
-            Assert.AreEqual(model[0].Values[0, 0], 0);
+            Assert.AreEqual(0, model.FirstOutputValue);
         }
 
         [TestMethod]

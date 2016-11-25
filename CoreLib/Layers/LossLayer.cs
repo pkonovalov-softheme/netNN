@@ -7,7 +7,7 @@ using CoreLib.CostsFunctions;
 
 namespace CoreLib.Layers
 {
-    class LossLayer : Layer
+    public class LossLayer : Layer
     {
         private readonly ILossOperator _costFunction;
 

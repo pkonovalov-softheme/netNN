@@ -9,6 +9,11 @@ namespace CoreLib
 {
     public class Matrix
     {
+        public Matrix(double value) : this(1, 1)
+        {
+            _values[0, 0] = value;
+        }
+
         public Matrix(int rows, int columns)
         {
             this.Rows = rows;
