@@ -30,11 +30,11 @@ namespace Tests
             _rnd = new Random(seed);
 
             Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
-            model.InputLayer.Values[0, 0] = initValue;
+            model.FirstInputValue = initValue;
             model.InitWithRandomValues(_rnd);
 
             Trace.WriteLine("Init value: " + initValue);
-            Trace.WriteLine("Weights: " + Environment.NewLine + model[0].Weights);
+            Trace.WriteLine("Weights: " + Environment.NewLine + model[0].Weights.Primal);
             return model;
         }
 
@@ -122,14 +122,14 @@ namespace Tests
                 model[1].ComputeGradient();
                 model[0].ComputeGradient();
 
-                double fa = model[0].Gradients[0, 0]; // Analytical gradient - dy/dw
+                double fa = model[0].Values.Extra[0, 0]; // Analytical gradient - dy/dw
 
-                double initWeight = model[0].Weights[0, 0];
-                model[0].Weights[0, 0] = initWeight + h;
+                double initWeight = model[0].Weights.Primal[0, 0];
+                model[0].Weights.Primal[0, 0] = initWeight + h;
                 model.ForwardPass();
                 double f1Val = model.FirstOutputValue;
 
-                model[0].Weights[0, 0] = initWeight - h;
+                model[0].Weights.Primal[0, 0] = initWeight - h;
                 model.ForwardPass();
                 double f2Val = model.FirstOutputValue;
 
@@ -163,19 +163,19 @@ namespace Tests
 
                 Model model = InitSimpleModel(_rnd.Next(1, 15));
                 model.FirstInputValue = 12;
-                model[0].Weights[0, 0] = 1.70257318629072;
-                model[0].Biases[0, 0] = 1.70257318629072;
+                model[0].Weights.Primal[0, 0] = 1.70257318629072;
+                model[0].Biases.Primal[0, 0] = 1.70257318629072;
 
                 for (int i = 0; i < passCount; i++)
                 {
                     model.ForwardPass();
 
-                    double curValue = model.OutputLayer.Values[0, 0];
+                    double curValue = model.FirstOutputValue;
                     double absDif = Math.Abs(curValue - targetY);
-                    model.OutputLayer.Gradients[0, 0] = -absDif;
+                    model.OutputLayer.Values.Extra[0, 0] = -absDif;
 
-                    Trace.WriteLine("W = " + model[0].Weights[0, 0]);
-                    Trace.WriteLine("B = " + model[0].Biases[0, 0]);
+                    Trace.WriteLine("W = " + model[0].Weights.Primal[0, 0]);
+                    Trace.WriteLine("B = " + model[0].Biases.Extra[0, 0]);
                     Trace.WriteLine("Loss = " + absDif);
 
                     if (!firstRun)

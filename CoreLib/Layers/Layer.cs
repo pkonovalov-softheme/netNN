@@ -7,14 +7,11 @@ namespace CoreLib.Layers
     {
         protected LinkedListNode<Layer> LayersListNode;
 
-        public Matrix Gradients { get; protected set; }
-
-        public Matrix Values { get; protected set; }
+        public DualMatrix Values { get; protected set; }
 
         protected Layer(int unitsCount)
         {
-            Gradients = new Matrix(unitsCount, 1);
-            Values = new Matrix(unitsCount, 1);
+            Values = new DualMatrix(unitsCount, 1);
         }
 
         public void SetListNode(LinkedListNode<Layer> layersListNode)

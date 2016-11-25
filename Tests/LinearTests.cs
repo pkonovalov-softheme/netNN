@@ -17,7 +17,7 @@ namespace Tests
         private Model InitSimpleModel(double initValue)
         {
             Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
-            model.InputLayer.Values[0, 0] = initValue;
+            model.FirstInputValue = initValue;
             model.AddAffineLayer(1, ActivationType.Identity);
             model.InitWithRandomValues(_rnd);
             return model;

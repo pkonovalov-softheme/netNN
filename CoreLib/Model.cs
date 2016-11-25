@@ -36,12 +36,12 @@ namespace CoreLib
             AddLayerInternal(new AffineLayer(unitsCount, activationType));
         }
 
-        public double FirstOutputValue => OutputLayer.Values[0, 0];
+        public double FirstOutputValue => OutputLayer.Values.Primal[0, 0];
 
         public double FirstInputValue
         {
-            get { return InputLayer.Values[0, 0]; }
-            set { InputLayer.Values[0, 0] = value; }
+            get { return InputLayer.Values.Primal[0, 0]; }
+            set { InputLayer.Values.Primal[0, 0] = value; }
         }
 
         public void ForwardPass()
@@ -56,7 +56,7 @@ namespace CoreLib
         {
             foreach (AffineLayer layer in AffineLayers())
             {
-                Initialiser.InitWithConstValue(layer.Weights, value);
+                Initialiser.InitWithConstValue(layer.Weights.Primal, value);
             }
         }
 
@@ -64,7 +64,7 @@ namespace CoreLib
         {
             foreach (AffineLayer layer in AffineLayers())
             {
-                Initialiser.InitRndUniform(layer.Weights, rnd, minimum, maximum);
+                Initialiser.InitRndUniform(layer.Weights.Primal, rnd, minimum, maximum);
             }
         }
 
@@ -90,7 +90,7 @@ namespace CoreLib
         {
             foreach (AffineLayer layer in AffineLayers())
             {
-                Initialiser.InitRndUniform(layer.Weights, rnd);
+                Initialiser.InitRndUniform(layer.Weights.Primal, rnd);
                 //Initialiser.InitRndUniform(layer.Biases, rnd);
             }
         }

@@ -45,6 +45,7 @@
     <Compile Include="CostsFunctions\Abs.cs" />
     <Compile Include="CostsFunctions\Costs.cs" />
     <Compile Include="CostsFunctions\SquareError.cs" />
+    <Compile Include="DualMatrix.cs" />
     <Compile Include="GeneralSettings.cs" />
     <Compile Include="Initialiser.cs" />
     <Compile Include="CostsFunctions\ILossOperator.cs" />

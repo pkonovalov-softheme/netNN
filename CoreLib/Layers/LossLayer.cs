@@ -18,26 +18,28 @@ namespace CoreLib.Layers
 
         public void ForwardPass(Matrix targetValues)
         {
-            Matrix.ValidateMatricesDims(Values, targetValues);
+            Matrix.ValidateMatricesDims(Values.Primal, targetValues);
 
             for (int raw = 0; raw < Values.Rows; raw++)
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    Gradients[raw, column] = _costFunction.ForwardPass(Values[raw, column], targetValues[raw, column]);
+                    NextLayer.Values.Primal[raw, column] = _costFunction.ForwardPass(
+                        Values.Primal[raw, column], targetValues[raw, column]);
                 }
             }
         }
 
         public void ComputeLossGradients(Matrix targetValues)
         {
-            Matrix.ValidateMatricesDims(Values, targetValues);
+            Matrix.ValidateMatricesDims(Values.Primal, targetValues);
 
             for (int raw = 0; raw < Values.Rows; raw++)
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    Gradients[raw, column] = _costFunction.ComputeLossGradient(Values[raw, column], targetValues[raw, column]);
+                    Values.Extra[raw, column] = _costFunction.ComputeLossGradient(
+                        Values.Primal[raw, column], targetValues[raw, column]);
                 }
             }
         }

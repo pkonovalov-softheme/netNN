@@ -44,8 +44,8 @@ namespace netNN
 
             Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
             model.AddAffineLayer(1, ActivationType.ReLU);
-            model[0].Values[0, 0] = 0.01; //Current value
-            model[0].Weights[0, 0] = 0.02; 
+            model[0].Values.Primal[0, 0] = 0.01; //Current value
+            model[0].Weights.Primal[0, 0] = 0.02; 
 
             // OutputLayer outputLayer = new OutputLayer(1);
 
@@ -53,8 +53,8 @@ namespace netNN
             {
                 model[0].ForwardPass();
 
-                double dif = model[0].Values[0, 0] - targetY;
-                model[0].Gradients[0, 0] = dif;
+                double dif = model[0].Values.Primal[0, 0] - targetY;
+                model[0].Values.Extra[0, 0] = dif;
 
                 if (i%1000 == 0)
                 {
