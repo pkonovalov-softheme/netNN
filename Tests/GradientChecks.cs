@@ -109,10 +109,13 @@ namespace Tests
             const double targetValue = 7;
 
             Model model = InitSimpleModel(inputValue);
+            model.InitWithConstWeights(0.5);
 
             for (int i = 0; i < passCount; i++)
             {
-                model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
+                //model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
+                model.FirstInputValue = 3.0;
+
                 model.ForwardPass();
 
                 model.OutputLayer.ComputeLossGradients(new Matrix(targetValue));

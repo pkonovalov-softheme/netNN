@@ -65,14 +65,14 @@ namespace CoreLib
             {
                 for (int column = 0; column < Gradients.Columns; column++)
                 {
-                    double x = PrevLayer.Values[raw, column]; // Current value
+                    double x = Values[raw, column]; // Current value
                     double dy = NextLayer.Gradients[raw, column]; // Current gradient
 
                     double df = _activation.Gradient(x, dy);
                     double dw = x*df;
                     _biasGrad = df;
 
-                    Gradients[raw, column] = dw; // Was += Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
+                    Gradients[raw, column] += dw; // Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
                 }
             }
 
