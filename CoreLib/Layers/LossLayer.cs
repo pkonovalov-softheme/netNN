@@ -38,7 +38,7 @@ namespace CoreLib.Layers
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    Values.Extra[raw, column] = _costFunction.ComputeLossGradient(
+                    PrevLayer.Values.Extra[raw, column] = _costFunction.ComputeLossGradient(
                         Values.Primal[raw, column], targetValues[raw, column]);
                 }
             }

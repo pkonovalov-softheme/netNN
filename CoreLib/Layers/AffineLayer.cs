@@ -77,7 +77,11 @@ namespace CoreLib
                     Biases.Extra[raw, column] = df;
                     Weights.Extra[raw, column] = dw;
 
-                    PrevLayer.Values.Extra[raw, column] += df * Weights.Primal[raw, column]; // Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
+                    if (PrevLayer != null)
+                    {
+                        PrevLayer.Values.Extra[raw, column] += df*Weights.Primal[raw, column];
+                            // Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
+                    }
                 }
             }
 

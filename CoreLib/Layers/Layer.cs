@@ -42,8 +42,7 @@ namespace CoreLib.Layers
         {
             get
             {
-                Debug.Assert(LayersListNode.Previous != null, "LayersListNode.Previous != null");
-                return LayersListNode.Previous.Value;
+                return LayersListNode.Previous?.Value;
             }
             set
             {
