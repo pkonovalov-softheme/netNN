@@ -122,7 +122,7 @@ namespace Tests
                 model[1].ComputeGradient();
                 model[0].ComputeGradient();
 
-                double fa = model[0].Values.Extra[0, 0]; // Analytical gradient - dy/dw
+                double fa = model[0].Weights.Extra[0, 0]; // Analytical gradient - dy/dw
 
                 double initWeight = model[0].Weights.Primal[0, 0];
                 model[0].Weights.Primal[0, 0] = initWeight + h;
