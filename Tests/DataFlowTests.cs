@@ -17,7 +17,7 @@ namespace Tests
         {
             Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
             model.FirstInputValue = 4;
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(0, model.FirstOutputValue);
         }
 
@@ -28,7 +28,7 @@ namespace Tests
             model.FirstInputValue = 4;
             model.InitWithConstWeights(1);
 
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(model.FirstOutputValue, 4);
         }
 
@@ -40,7 +40,7 @@ namespace Tests
 
             model.InitWithConstWeights(0.5);
 
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(1, model.FirstOutputValue);
         }
 
@@ -51,7 +51,7 @@ namespace Tests
             model.FirstInputValue = 4;
             model.InitWithConstWeights(2);
 
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(16, model.FirstOutputValue);
         }
 
@@ -63,7 +63,7 @@ namespace Tests
             model.InitWithConstWeights(2);
             model[0].Biases.Primal[0, 0] = 3;
             //(4 * 2 + 3) * 2 
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(22, model.FirstOutputValue);
         }
 
@@ -76,7 +76,7 @@ namespace Tests
             Initialiser.InitWithConstValue(model[0].Weights.Primal, 1);
             Initialiser.InitWithConstValue(model[1].Weights.Primal, 2);
 
-            model.ForwardPass();
+            model.ForwardPass(new Matrix(0));
             Assert.AreEqual(8, model.FirstOutputValue);
         }
     }

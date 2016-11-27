@@ -107,6 +107,8 @@ namespace CoreLib
                     Weights.Primal[raw, column] -= Weights.Extra[raw, column]*LearningRate;
                     Weights.Extra[raw, column] = 0;
                     Biases.Primal[raw, column] -= Biases.Extra[raw, column] * LearningRate;
+                    Biases.Extra[raw, column] = 0;
+                    Values.Extra[raw, column] = 0;
                 }
             }
         }

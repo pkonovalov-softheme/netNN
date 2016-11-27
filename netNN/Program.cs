@@ -47,7 +47,7 @@ namespace netNN
             model[0].Values.Primal[0, 0] = 0.01; //Current value
             model[0].Weights.Primal[0, 0] = 0.02; 
 
-            // OutputLayer outputLayer = new OutputLayer(1);
+            // LossLayer outputLayer = new LossLayer(1);
 
             for (int i = 0; i < passCount; i++)
             {

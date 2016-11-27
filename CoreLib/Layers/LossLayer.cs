@@ -10,9 +10,11 @@ namespace CoreLib.Layers
     public class LossLayer : Layer
     {
         private readonly ILossOperator _costFunction;
+        public Matrix Losses { get; }
 
         public LossLayer(CostType costType, int unitsCount) : base(unitsCount)
         {
+            Losses = new Matrix(unitsCount, 1);
             _costFunction = CostsHelper.GetCostFunction(costType);
         }
 
@@ -24,7 +26,7 @@ namespace CoreLib.Layers
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    NextLayer.Values.Primal[raw, column] = _costFunction.ForwardPass(
+                    Losses[raw, column] = _costFunction.ForwardPass(
                         Values.Primal[raw, column], targetValues[raw, column]);
                 }
             }
@@ -38,8 +40,7 @@ namespace CoreLib.Layers
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    PrevLayer.Values.Extra[raw, column] = _costFunction.ComputeLossGradient(
-                        Values.Primal[raw, column], targetValues[raw, column]);
+                    PrevLayer.Values.Extra[raw, column] = _costFunction.ComputeLossGradient(Losses[raw, column], targetValues[raw, column]);
                 }
             }
         }

@@ -52,7 +52,7 @@ namespace Tests
 
                 for (int i = 0; i < passCount; i++)
                 {
-                    model.ForwardPass();
+                    model.ForwardPass(new Matrix(0));
 
                     double curValue = model.FirstOutputValue;
 
@@ -81,7 +81,7 @@ namespace Tests
 
             for (int i = 0; i < passCount; i++)
             {
-                model.ForwardPass();
+                model.ForwardPass(new Matrix(0));
 
                 double curValue = model.FirstOutputValue;
 
@@ -106,19 +106,18 @@ namespace Tests
             const double inputValue = 5;
             const int passCount = 10;
             const double h = 1e-5;
-            const double targetValue = 7;
 
             Model model = InitSimpleModel(inputValue);
             model.InitWithConstWeights(0.5);
 
             for (int i = 0; i < passCount; i++)
             {
-                //model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
-                model.FirstInputValue = 3.0;
+                model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
+                Matrix target = new Matrix(2* model.FirstInputValue);
 
-                model.ForwardPass();
+                model.ForwardPass(target);
 
-                model.OutputLayer.ComputeLossGradients(new Matrix(targetValue));
+                model.LossLayer.ComputeLossGradients(target);
                 model[1].ComputeGradient();
                 model[0].ComputeGradient();
 
@@ -126,12 +125,12 @@ namespace Tests
 
                 double initWeight = model[0].Weights.Primal[0, 0];
                 model[0].Weights.Primal[0, 0] = initWeight + h;
-                model.ForwardPass();
-                double f1Val = model.FirstOutputValue;
+                model.ForwardPass(target);
+                double f1Val = model.FirstLossValue;
 
                 model[0].Weights.Primal[0, 0] = initWeight - h;
-                model.ForwardPass();
-                double f2Val = model.FirstOutputValue;
+                model.ForwardPass(target);
+                double f2Val = model.FirstLossValue;
 
                 double fn = (f1Val - f2Val) / (2 * h); // Numerical gradient
                 double relativeError = Math.Abs(fa - fn)/Math.Max(Math.Abs(fa), Math.Abs(fn));
@@ -142,6 +141,7 @@ namespace Tests
                 // 1e-7 and less you should be happy.
 
                 Assert.IsTrue(relativeError < 1e-4, "Failed on " + i + " try");
+                model[1].ApplyGradient();
                 model[0].ApplyGradient();
             }
         }
@@ -168,11 +168,11 @@ namespace Tests
 
                 for (int i = 0; i < passCount; i++)
                 {
-                    model.ForwardPass();
+                    model.ForwardPass(new Matrix(0));
 
                     double curValue = model.FirstOutputValue;
                     double absDif = Math.Abs(curValue - targetY);
-                    model.OutputLayer.Values.Extra[0, 0] = -absDif;
+                    model.LossLayer.Values.Extra[0, 0] = -absDif;
 
                     Trace.WriteLine("W = " + model[0].Weights.Primal[0, 0]);
                     Trace.WriteLine("B = " + model[0].Biases.Extra[0, 0]);

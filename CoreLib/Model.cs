@@ -22,21 +22,24 @@ namespace CoreLib
             _layers.AddLast(outputLayer);
             outputLayer.SetListNode(_layers.Last);
 
-            OutputLayer = new LossLayer(costType, outputsCount);
-            _layers.AddLast(OutputLayer);
-            OutputLayer.SetListNode(_layers.Last);
+            LossLayer = new LossLayer(costType, outputsCount);
+            _layers.AddLast(LossLayer);
+            LossLayer.SetListNode(_layers.Last);
         }
 
         public Layer InputLayer => _layers.First.Value;
 
-        public LossLayer OutputLayer { get; }
+        public LossLayer LossLayer { get; }
 
         public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {
             AddLayerInternal(new AffineLayer(unitsCount, activationType));
         }
 
-        public double FirstOutputValue => OutputLayer.Values.Primal[0, 0];
+        public double FirstLossValue => LossLayer.Losses[0, 0];
+
+        public double FirstOutputValue => LossLayer.Values.Primal[0, 0];
+
 
         public double FirstInputValue
         {
@@ -44,28 +47,14 @@ namespace CoreLib
             set { InputLayer.Values.Primal[0, 0] = value; }
         }
 
-        public void ForwardPass()
+        public void ForwardPass(Matrix targetValues)
         {
             foreach (AffineLayer layer in AffineLayers())
             {
                 layer.ForwardPass();
             }
-        }
 
-        public void InitWithConstWeights(double value)
-        {
-            foreach (AffineLayer layer in AffineLayers())
-            {
-                Initialiser.InitWithConstValue(layer.Weights.Primal, value);
-            }
-        }
-
-        public void InitWithRandomWeights(Random rnd, double? minimum = null, double? maximum = null)
-        {
-            foreach (AffineLayer layer in AffineLayers())
-            {
-                Initialiser.InitRndUniform(layer.Weights.Primal, rnd, minimum, maximum);
-            }
+            LossLayer.ForwardPass(targetValues);
         }
 
         public void BackwardPass(Matrix targetValues)
@@ -83,6 +72,22 @@ namespace CoreLib
                 }
 
                 curLayer.Value.BackwardPass();
+            }
+        }
+
+        public void InitWithConstWeights(double value)
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                Initialiser.InitWithConstValue(layer.Weights.Primal, value);
+            }
+        }
+
+        public void InitWithRandomWeights(Random rnd, double? minimum = null, double? maximum = null)
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                Initialiser.InitRndUniform(layer.Weights.Primal, rnd, minimum, maximum);
             }
         }
 
