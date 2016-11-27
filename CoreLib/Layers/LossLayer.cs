@@ -40,7 +40,7 @@ namespace CoreLib.Layers
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    PrevLayer.Values.Extra[raw, column] = _costFunction.ComputeLossGradient(Losses[raw, column], targetValues[raw, column]);
+                    PrevLayer.Values.Extra[raw, column] = _costFunction.ComputeLossGradient(Values.Primal[raw, column], targetValues[raw, column]);
                 }
             }
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CoreLib.CostsFunctions
 {
-    public enum CostType { Abs };
+    public enum CostType { Abs, Square };
 
     public static class CostsHelper
     {
@@ -17,6 +17,8 @@ namespace CoreLib.CostsFunctions
             {
                 case CostType.Abs:
                     return new Abs();
+                case CostType.Square:
+                    return new SquareError();
                 default:
                     throw new InvalidEnumArgumentException(costType.ToString());
             }

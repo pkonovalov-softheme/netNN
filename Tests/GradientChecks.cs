@@ -21,15 +21,13 @@ namespace Tests
         //GeneralSettings.GradientsTracingEnabled = true;
         //GeneralSettings.ValuesTracingEnabled = true;
 
-        private Model InitSimpleModel(double initValue)
+        private Model InitSimpleModel(double initValue, CostType costType = CostType.Abs)
         {
-           // int seed = DateTime.Now.Millisecond;
-
-            int seed = 259;
+            int seed = DateTime.Now.Millisecond;
             Trace.WriteLine("Seed " + seed);
             _rnd = new Random(seed);
 
-            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
+            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, costType);
             model.FirstInputValue = initValue;
             model.InitWithRandomValues(_rnd);
 
@@ -101,19 +99,30 @@ namespace Tests
         }
 
         [TestMethod]
-        public void NumericalGradientCheck()
+        public void NumericalGradientCheckAbs()
         {
-            const double inputValue = 5;
-            const int passCount = 10;
-            const double h = 1e-5;
-
-            Model model = InitSimpleModel(inputValue);
+            Model model = InitSimpleModel(0, CostType.Abs);
             model.InitWithConstWeights(0.5);
+            NumericGradCheckInternal(model);
+        }
+
+        [TestMethod]
+        public void NumericalGradientCheckSqr()
+        {
+            Model model = InitSimpleModel(0, CostType.Square);
+            model.InitWithConstWeights(0.5);
+            NumericGradCheckInternal(model);
+        }
+
+        private void NumericGradCheckInternal(Model model)
+        {
+            const int passCount = 10;
 
             for (int i = 0; i < passCount; i++)
             {
-                model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
-                Matrix target = new Matrix(2* model.FirstInputValue);
+                model.FirstInputValue = 4;
+                //model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
+                Matrix target = new Matrix(2*model.FirstInputValue);
 
                 model.ForwardPass(target);
 
@@ -124,23 +133,15 @@ namespace Tests
                 double fa = model[0].Weights.Extra[0, 0]; // Analytical gradient - dy/dw
 
                 double initWeight = model[0].Weights.Primal[0, 0];
-                model[0].Weights.Primal[0, 0] = initWeight + h;
+                model[0].Weights.Primal[0, 0] = initWeight + GradUtils.H;
                 model.ForwardPass(target);
                 double f1Val = model.FirstLossValue;
 
-                model[0].Weights.Primal[0, 0] = initWeight - h;
+                model[0].Weights.Primal[0, 0] = initWeight - GradUtils.H;
                 model.ForwardPass(target);
                 double f2Val = model.FirstLossValue;
 
-                double fn = (f1Val - f2Val) / (2 * h); // Numerical gradient
-                double relativeError = Math.Abs(fa - fn)/Math.Max(Math.Abs(fa), Math.Abs(fn));
-
-                // relative error > 1e-2 usually means the gradient is probably wrong
-                // 1e-2 > relative error > 1e-4 should make you feel uncomfortable
-                // 1e-4 > relative error is usually okay for objectives with kinks.But if there are no kinks(e.g.use of tanh nonlinearities and softmax), then 1e-4 is too high.
-                // 1e-7 and less you should be happy.
-
-                Assert.IsTrue(relativeError < 1e-4, "Failed on " + i + " try");
+                Assert.IsTrue(GradUtils.ChechAnalGrad(fa, f1Val, f2Val), "Failed on " + i + " try");
                 model[1].ApplyGradient();
                 model[0].ApplyGradient();
             }
