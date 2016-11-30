@@ -103,8 +103,11 @@ namespace Tests
         {
             const int targetValue = 0;
             const int passCount = 10;
-            Model model = InitSimpleModel(_rnd.Next(1, 15), CostType.Square);
-            model.InitWithRandomWeights(_rnd, 5, 10);
+            //Model model = InitSimpleModel(_rnd.Next(1, 15), CostType.Square);
+            Model model = InitSimpleModel(10, CostType.Square);
+
+            // model.InitWithRandomWeights(_rnd, 5, 10);
+            model.InitWithConstWeights(1);
             for (int i = 0; i < passCount; i++)
             {
                 model.ForwardPass(new Matrix(0));
