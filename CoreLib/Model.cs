@@ -8,6 +8,7 @@ using CoreLib.Layers;
 
 namespace CoreLib
 {
+    [Serializable]
     public class Model
     {
         private readonly LinkedList<Layer> _layers = new LinkedList<Layer>();
@@ -30,6 +31,9 @@ namespace CoreLib
         public Layer InputLayer => _layers.First.Value;
 
         public LossLayer LossLayer { get; }
+
+        public int LayersCount => _layers.Count;
+
 
         public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {
@@ -66,7 +70,7 @@ namespace CoreLib
             while(true)
             {
                 curLayer = curLayer.Previous;
-                if (curLayer.Previous == null)
+                if (curLayer == null)
                 {
                     break;
                 }
@@ -102,7 +106,7 @@ namespace CoreLib
 
         public AffineLayer this[int key] => AffineLayers().ElementAt(key);
 
-        private IEnumerable<AffineLayer> AffineLayers()
+        public IEnumerable<AffineLayer> AffineLayers()
         {
             return _layers.OfType<AffineLayer>();
         }

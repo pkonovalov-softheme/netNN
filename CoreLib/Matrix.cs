@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CoreLib
 {
+    [Serializable]
     public class Matrix
     {
         public Matrix(double value) : this(1, 1)
@@ -252,7 +253,7 @@ namespace CoreLib
                     sb.AppendFormat("{0} ", _values[raw, column]);
                 }
 
-                sb.AppendLine(Environment.NewLine + Environment.NewLine);
+               // sb.AppendLine(Environment.NewLine);
             }
 
             return sb.ToString();

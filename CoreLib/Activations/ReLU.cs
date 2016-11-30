@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreLib
 {
+    [Serializable]
     public class ReLU : IActivationFunction
     {
         /// <summary>

@@ -99,6 +99,45 @@ namespace Tests
         }
 
         [TestMethod]
+        public void OverShootingMakeWeightsSmaller()
+        {
+            const int targetValue = 0;
+            const int passCount = 10;
+            Model model = InitSimpleModel(_rnd.Next(1, 15), CostType.Square);
+            model.InitWithRandomWeights(_rnd, 5, 10);
+            for (int i = 0; i < passCount; i++)
+            {
+                model.ForwardPass(new Matrix(0));
+                double curValue = model.FirstOutputValue;
+
+                var weightsBefore = new List<Matrix>();
+
+                //var modelBefore = Utils.DeepCopy(model);
+                for (int k = 0; k < model.LayersCount - 1; k++)
+                {
+                    weightsBefore.Add(Utils.DeepCopy(model[k].Weights.Primal));
+                }
+
+                Matrix target = new Matrix(targetValue);
+                model.BackwardPass(target);
+
+                for (int k = 0; k < model.LayersCount - 1; k++)
+                {
+                    AffineLayer modelLayer = model[k];
+                    Matrix prevModelWeights = weightsBefore[k];
+
+                    for (int j = 0; j < modelLayer.Weights.Primal.Rows; j++)
+                    {
+                        double current = modelLayer.Weights.Primal[j, 0];
+                        double prev = prevModelWeights[j, 0];
+
+                        Assert.IsTrue(current < prev, "current = {0} prev = {1}", current, prev);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
         public void NumericalGradientCheckAbs()
         {
             Model model = InitSimpleModel(0, CostType.Abs);
@@ -110,7 +149,7 @@ namespace Tests
         public void NumericalGradientCheckSqr()
         {
             Model model = InitSimpleModel(0, CostType.Square);
-            model.InitWithConstWeights(0.5);
+            //model.InitWithConstWeights(0.5);
             NumericGradCheckInternal(model);
         }
 
@@ -120,8 +159,7 @@ namespace Tests
 
             for (int i = 0; i < passCount; i++)
             {
-                model.FirstInputValue = 4;
-                //model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
+                model.FirstInputValue = Utils.GetRandomNumber(_rnd, 0.05, 10);
                 Matrix target = new Matrix(2*model.FirstInputValue);
 
                 model.ForwardPass(target);

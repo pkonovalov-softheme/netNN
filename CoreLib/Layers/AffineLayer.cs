@@ -13,6 +13,7 @@ namespace CoreLib
     /// q = W*x
     /// dx = W*dq
     /// </summary>
+    [Serializable]
     public sealed class AffineLayer : Layer
     {
         const double LearningRate = 0.01;
@@ -45,12 +46,12 @@ namespace CoreLib
 #if DEBUG
             if (GeneralSettings.ValuesTracingEnabled)
             {
-                Debug.WriteLine("Forward pass." + Environment.NewLine + "Values:");
-                Debug.WriteLine(Values.ToString());
-                Debug.WriteLine("Weights:");
-                Debug.WriteLine(Weights.ToString());
-                Debug.WriteLine("Biases:");
-                Debug.WriteLine(Biases.ToString());
+                Trace.Write("Affine layer: " + GetHashCode() + ". Values:");
+                Trace.Write(Values.Primal.ToString());
+                Trace.Write("Weights:");
+                Trace.Write(Weights.Primal.ToString());
+                Trace.Write("Biases:");
+                Trace.WriteLine(Biases.Primal.ToString());
             }
 #endif 
         }
@@ -79,8 +80,7 @@ namespace CoreLib
 
                     if (PrevLayer != null)
                     {
-                        PrevLayer.Values.Extra[raw, column] += df*Weights.Primal[raw, column];
-                            // Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
+                        PrevLayer.Values.Extra[raw, column] += df*Weights.Primal[raw, column]; // Take the gradient in output unit and chain it with the local gradients . This will allow us to possibly use the output of one gate multiple times (think of it as a wire branching out), since it turns out that the gradients from these different branches just add up when computing the final gradient with respect to the circuit output.
                     }
                 }
             }
@@ -88,10 +88,10 @@ namespace CoreLib
 #if DEBUG
             if (GeneralSettings.GradientsTracingEnabled)
             {
-                Debug.WriteLine("Backward pass. /n Weights gradients:");
-                Debug.WriteLine(Values.Extra.ToString());
-                Debug.WriteLine("Bias gradient: " + Biases.Extra);
-                Debug.WriteLine("Weights gradient: " + Weights.Extra);
+                Trace.Write("Affine layer: " + GetHashCode() + ". Values grad:");
+                Trace.Write(Values.Extra.ToString());
+                Trace.Write("Bias grad: " + Biases.Extra);
+                Trace.WriteLine("Weights grad: " + Weights.Extra);
             }
 #endif 
         }
@@ -104,7 +104,7 @@ namespace CoreLib
             {
                 for (int column = 0; column < Values.Columns; column++)
                 {
-                    Weights.Primal[raw, column] -= Weights.Extra[raw, column]*LearningRate;
+                    Weights.Primal[raw, column] -= Weights.Extra[raw, column] * LearningRate;
                     Weights.Extra[raw, column] = 0;
                     Biases.Primal[raw, column] -= Biases.Extra[raw, column] * LearningRate;
                     Biases.Extra[raw, column] = 0;
