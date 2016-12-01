@@ -39,48 +39,66 @@ namespace netNN
             //     Console.WriteLine("Manufacturer      : {0}", m["Manufacturer"]);
             // }
 
-            using (Py.GIL())
-            {
-                dynamic np = Py.Import("numpy");
-                dynamic sin = np.sin;
-                Console.WriteLine(np.cos(np.pi * 2));
-                Console.WriteLine(sin(5));
-                double c = np.cos(5) + sin(5);
-                Console.WriteLine(c);
-                /* this block is temporarily disabled due to regression
-                dynamic a = np.array(new List<float> { 1, 2, 3 });
-                dynamic b = np.array(new List<float> { 6, 5, 4 }, Py.kw("dtype", np.int32));
-                Console.WriteLine(a.dtype);
-                Console.WriteLine(b.dtype);
-                Console.WriteLine(a * b);
-                */
-                Console.ReadKey();
-            }
+            //using (Py.GIL())
+            //{
+            //    dynamic np = Py.Import("numpy");
+            //    dynamic sin = np.sin;
+            //    Console.WriteLine(np.cos(np.pi * 2));
+            //    Console.WriteLine(sin(5));
+            //    double c = np.cos(5) + sin(5);
+            //    Console.WriteLine(c);
+            //    /* this block is temporarily disabled due to regression
+            //    dynamic a = np.array(new List<float> { 1, 2, 3 });
+            //    dynamic b = np.array(new List<float> { 6, 5, 4 }, Py.kw("dtype", np.int32));
+            //    Console.WriteLine(a.dtype);
+            //    Console.WriteLine(b.dtype);
+            //    Console.WriteLine(a * b);
+            //    */
+            //    Console.ReadKey();
+            //}
 
             //const int passCount = 10000;
             //double targetY = 5;
 
-            //Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
-            //model.AddAffineLayer(1, ActivationType.ReLU);
-            //model[0].Values.Primal[0, 0] = 0.01; //Current value
-            //model[0].Weights.Primal[0, 0] = 0.02; 
 
-            //// LossLayer outputLayer = new LossLayer(1);
+           // Func<double, double> y = x => 3.3*x + 1.4;
 
-            //for (int i = 0; i < passCount; i++)
-            //{
-            //    model[0].ForwardPass();
+            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Square);
+            //model.FirstInputValue = initValue;
+            Random rnd = new Random();
 
-            //    double dif = model[0].Values.Primal[0, 0] - targetY;
-            //    model[0].Values.Extra[0, 0] = dif;
+            model.InitWithRandomWeights(rnd);
 
-            //    if (i%1000 == 0)
-            //    {
-            //        Console.WriteLine(dif);
-            //    }
 
-            //    model[0].BackwardPass();
-            //}
+            for (int i = 0; i < 200; i++)
+            {
+                double x = rnd.NextDouble();
+                model.FirstInputValue = x;
+
+                double y = 3.3*x + 1.4;
+                Matrix target = new Matrix(y);
+
+                model.ForwardPass(target);
+                model.BackwardPass(target);
+
+                double w1 = model[0].Weights.Primal[0, 0]; 
+                double b1 = model[0].Biases.Primal[0, 0];
+                
+                double w2 = model[1].Weights.Primal[0, 0];
+                double b2 = model[1].Biases.Primal[0, 0];
+
+                if (i%50 == 0)
+                {
+                    Console.WriteLine("w1: {0} b1: {1} w2:{2} b2:{3}", w1, b1, w2, b2);
+                }
+            }
+
+            double x_test = 1.3;
+            model.FirstInputValue = 1.3;
+            double y_test = 3.3 * x_test + 1.4;
+
+            model.ForwardPass(new Matrix(y_test));
+            double output = model.FirstOutputValue;
         }
     }
 }

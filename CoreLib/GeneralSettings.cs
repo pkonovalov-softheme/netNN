@@ -10,8 +10,8 @@ namespace CoreLib
 {
     public static class GeneralSettings
     {
-        public static bool ValuesTracingEnabled = true;
-        public static bool GradientsTracingEnabled = true;
+        public static bool ValuesTracingEnabled = false;
+        public static bool GradientsTracingEnabled = false;
         const string LogPath = "C:\\temp\\TextWriterOutput.log";
 
         static GeneralSettings()

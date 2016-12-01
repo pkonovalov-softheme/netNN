@@ -46,7 +46,7 @@ namespace CoreLib
 #if DEBUG
             if (GeneralSettings.ValuesTracingEnabled)
             {
-                Trace.Write("Affine layer: " + GetHashCode() + ". Values:");
+                Trace.Write("Affine layer: " + LayerId + ". Values:");
                 Trace.Write(Values.Primal.ToString());
                 Trace.Write("Weights:");
                 Trace.Write(Weights.Primal.ToString());

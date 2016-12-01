@@ -112,6 +112,11 @@ namespace CoreLib
 
         public void InitWithRandomWeights(Random rnd, double? minimum = null, double? maximum = null)
         {
+            if (rnd == null)
+            {
+                rnd =new Random();
+            }
+
             foreach (AffineLayer layer in AffineLayers())
             {
                 Initialiser.InitRndUniform(layer.Weights.Primal, rnd, minimum, maximum);
