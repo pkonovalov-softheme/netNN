@@ -56,5 +56,74 @@ namespace CoreLib
         {
             return random.NextDouble() * (maximum - minimum) + minimum;
         }
+
+
+        public static List<double> CsvToDoubles(string path)
+        {
+            //IEnumerable<string[]> lines = File.ReadAllLines(path).Select(a => a.Split(';'));
+            //IEnumerable<string[]> csv = from line in lines
+            //          select (line[0].Split(',')).ToArray();
+
+
+            string str = File.ReadAllLines(path).First();
+            str = str.Replace("[", "").Replace("]", "").Replace("\"", "");
+            List<string> res = str.Split(',').ToList();
+            return res.Select(Convert.ToDouble).ToList();
+        }
+
+        public static void InvokePythonScript(string path, string[] args)
+        {
+            // full path of python interpreter 
+            string python = @"I:\Anaconda3\python.exe";
+
+            // python app to call 
+            string myPythonApp = path;
+
+
+            // Create new process start info 
+            ProcessStartInfo myProcessStartInfo = new ProcessStartInfo(python);
+
+            // make sure we can read the output from stdout 
+            myProcessStartInfo.UseShellExecute = false;
+            myProcessStartInfo.RedirectStandardOutput = true;
+            myProcessStartInfo.RedirectStandardError = true;
+
+            // start python app with 3 arguments  
+            // 1st arguments is pointer to itself,  
+            // 2nd and 3rd are actual arguments we want to send 
+            myProcessStartInfo.Arguments = myPythonApp + " " + String.Join(" ", args);
+
+            Process myProcess = new Process();
+            // assign start information to the process 
+            myProcess.StartInfo = myProcessStartInfo;
+
+            // start the process 
+            myProcess.Start();
+
+            // Read the standard output of the app we called.  
+            // in order to avoid deadlock we will read output first 
+            // and then wait for process terminate: 
+            StreamReader myStreamReader = myProcess.StandardOutput;
+            string stderrx = myProcess.StandardError.ReadToEnd();
+            string myString = myStreamReader.ReadLine();
+
+            /*if you need to read multiple lines, you might use: 
+                string myString = myStreamReader.ReadToEnd() */
+
+            // wait exit signal from the app we called and then close it. 
+            myProcess.WaitForExit();
+           
+            // write the output we got from python app 
+            Debug.WriteLine("Value received from script: " + myString);
+            Debug.WriteLine("Exit code : {0}", myProcess.ExitCode);
+            Debug.WriteLine("Stderr : {0}", stderrx);
+
+            if (myProcess.ExitCode != 0)
+            {
+                throw new InvalidOperationException(stderrx);
+            }
+
+            myProcess.Close();
+        }
     }
 }

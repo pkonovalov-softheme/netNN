@@ -26,6 +26,20 @@ namespace CoreLib
             LossLayer = new LossLayer(costType, outputsCount);
             _layers.AddLast(LossLayer);
             LossLayer.SetListNode(_layers.Last);
+
+            UpdateLayersIds();
+        }
+
+        private void UpdateLayersIds()
+        {
+            int layerId = 0;
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                layer.LayerId = layerId;
+                layerId++;
+            }
+
+            LossLayer.LayerId = layerId;
         }
 
         public Layer InputLayer => _layers.First.Value;
@@ -38,6 +52,7 @@ namespace CoreLib
         public void AddAffineLayer(int unitsCount, ActivationType activationType)
         {
             AddLayerInternal(new AffineLayer(unitsCount, activationType));
+            UpdateLayersIds();
         }
 
         public double FirstLossValue => LossLayer.Losses[0, 0];
@@ -84,6 +99,14 @@ namespace CoreLib
             foreach (AffineLayer layer in AffineLayers())
             {
                 Initialiser.InitWithConstValue(layer.Weights.Primal, value);
+            }
+        }
+
+        public void InitWithConstBiases(double value)
+        {
+            foreach (AffineLayer layer in AffineLayers())
+            {
+                Initialiser.InitWithConstValue(layer.Biases.Primal, value);
             }
         }
 

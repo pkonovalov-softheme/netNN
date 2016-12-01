@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +13,12 @@ namespace Tests
         public const double H = 1e-5;
 
         /// <summary>
-        /// Verifies that analitical gradient is valid by calculating numerical
+        /// Verifies that analytical gradient is valid by calculating numerical
         /// </summary>
         /// <param name="fa">analitical gradient</param>
         /// <param name="f1Val">f(x + h)</param>
         /// <param name="f2Val">f(x - h)</param>
-        /// <returns>Is analitical gradient valid</returns>
+        /// <returns>Is analytical gradient valid</returns>
         public static bool ChechAnalGrad(double fa, double f1Val, double f2Val)
         {
             double fn = (f1Val - f2Val) / (2 * H); // Numerical gradient

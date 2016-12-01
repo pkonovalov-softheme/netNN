@@ -9,24 +9,45 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLib", "CoreLib\CoreLib.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{0B137904-3AA2-43C8-B750-329BFC59C09A}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "TFwrapper", "TFwrapper\TFwrapper.pyproj", "{966ABCE4-A93D-469A-BD57-9B891E191B37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8981C803-899B-4156-887D-455C400BA144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8981C803-899B-4156-887D-455C400BA144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8981C803-899B-4156-887D-455C400BA144}.Debug|x64.ActiveCfg = Debug|x64
+		{8981C803-899B-4156-887D-455C400BA144}.Debug|x64.Build.0 = Debug|x64
 		{8981C803-899B-4156-887D-455C400BA144}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8981C803-899B-4156-887D-455C400BA144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8981C803-899B-4156-887D-455C400BA144}.Release|x64.ActiveCfg = Release|x64
+		{8981C803-899B-4156-887D-455C400BA144}.Release|x64.Build.0 = Release|x64
 		{3797F831-13BF-4A32-839C-816540D8B1AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3797F831-13BF-4A32-839C-816540D8B1AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3797F831-13BF-4A32-839C-816540D8B1AF}.Debug|x64.ActiveCfg = Debug|x64
+		{3797F831-13BF-4A32-839C-816540D8B1AF}.Debug|x64.Build.0 = Debug|x64
 		{3797F831-13BF-4A32-839C-816540D8B1AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3797F831-13BF-4A32-839C-816540D8B1AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3797F831-13BF-4A32-839C-816540D8B1AF}.Release|x64.ActiveCfg = Release|x64
+		{3797F831-13BF-4A32-839C-816540D8B1AF}.Release|x64.Build.0 = Release|x64
 		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Debug|x64.ActiveCfg = Debug|x64
+		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Debug|x64.Build.0 = Debug|x64
 		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Release|x64.ActiveCfg = Release|x64
+		{0B137904-3AA2-43C8-B750-329BFC59C09A}.Release|x64.Build.0 = Release|x64
+		{966ABCE4-A93D-469A-BD57-9B891E191B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{966ABCE4-A93D-469A-BD57-9B891E191B37}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{966ABCE4-A93D-469A-BD57-9B891E191B37}.Debug|x64.Build.0 = Debug|Any CPU
+		{966ABCE4-A93D-469A-BD57-9B891E191B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{966ABCE4-A93D-469A-BD57-9B891E191B37}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

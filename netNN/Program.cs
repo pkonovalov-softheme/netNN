@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CoreLib;
 using CoreLib.CostsFunctions;
 using CoreLib.Layers;
+using Python.Runtime;
 
 namespace netNN
 {
@@ -38,31 +39,48 @@ namespace netNN
             //     Console.WriteLine("Manufacturer      : {0}", m["Manufacturer"]);
             // }
 
-
-            const int passCount = 10000;
-            double targetY = 5;
-
-            Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
-            model.AddAffineLayer(1, ActivationType.ReLU);
-            model[0].Values.Primal[0, 0] = 0.01; //Current value
-            model[0].Weights.Primal[0, 0] = 0.02; 
-
-            // LossLayer outputLayer = new LossLayer(1);
-
-            for (int i = 0; i < passCount; i++)
+            using (Py.GIL())
             {
-                model[0].ForwardPass();
-
-                double dif = model[0].Values.Primal[0, 0] - targetY;
-                model[0].Values.Extra[0, 0] = dif;
-
-                if (i%1000 == 0)
-                {
-                    Console.WriteLine(dif);
-                }
-
-                model[0].BackwardPass();
+                dynamic np = Py.Import("numpy");
+                dynamic sin = np.sin;
+                Console.WriteLine(np.cos(np.pi * 2));
+                Console.WriteLine(sin(5));
+                double c = np.cos(5) + sin(5);
+                Console.WriteLine(c);
+                /* this block is temporarily disabled due to regression
+                dynamic a = np.array(new List<float> { 1, 2, 3 });
+                dynamic b = np.array(new List<float> { 6, 5, 4 }, Py.kw("dtype", np.int32));
+                Console.WriteLine(a.dtype);
+                Console.WriteLine(b.dtype);
+                Console.WriteLine(a * b);
+                */
+                Console.ReadKey();
             }
+
+            //const int passCount = 10000;
+            //double targetY = 5;
+
+            //Model model = new Model(1, ActivationType.ReLU, 1, ActivationType.ReLU, CostType.Abs);
+            //model.AddAffineLayer(1, ActivationType.ReLU);
+            //model[0].Values.Primal[0, 0] = 0.01; //Current value
+            //model[0].Weights.Primal[0, 0] = 0.02; 
+
+            //// LossLayer outputLayer = new LossLayer(1);
+
+            //for (int i = 0; i < passCount; i++)
+            //{
+            //    model[0].ForwardPass();
+
+            //    double dif = model[0].Values.Primal[0, 0] - targetY;
+            //    model[0].Values.Extra[0, 0] = dif;
+
+            //    if (i%1000 == 0)
+            //    {
+            //        Console.WriteLine(dif);
+            //    }
+
+            //    model[0].BackwardPass();
+            //}
         }
     }
 }

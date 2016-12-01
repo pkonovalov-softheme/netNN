@@ -11,6 +11,8 @@ namespace CoreLib.Layers
 
         public DualMatrix Values { get; protected set; }
 
+        public int LayerId { get; set; }
+
         protected Layer(int unitsCount)
         {
             Values = new DualMatrix(unitsCount, 1);

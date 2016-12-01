@@ -73,7 +73,7 @@ namespace CoreLib
                     double x = Values.Primal[raw, column]; // Current value
                     double dy = Values.Extra[raw, column]; // Current gradient
 
-                    double df = _activation.Gradient(x, dy);
+                    double df = _activation.Gradient(NextLayer.Values.Primal[raw, column], dy);
                     double dw = x*df;
                     Biases.Extra[raw, column] = df;
                     Weights.Extra[raw, column] = dw;
